@@ -1,0 +1,119 @@
+html {
+  font-size: calc(1px + ((100vw - 414px) / 414) * 1);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI',
+    Helvetica, Arial, sans-serif;
+  font-size: 14rem;
+  font-weight: 400;
+  word-break: break-word;
+  p {
+    font-size: 12rem;
+    word-break: break-word;
+    margin-bottom: 0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  margin-bottom: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+ul {
+  padding: 0;
+  li {
+    list-style: none;
+  }
+}
+
+button {
+  &:hover:enabled {
+    cursor: pointer;
+  }
+  &:disabled {
+    pointer-events: none;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+input,
+textarea {
+  appearance: none;
+  outline: none;
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: inherit;
+    transition-property: all;
+    transition-delay: 99999s;
+    -webkit-transition-delay: 99999s;
+    font-size: inherit;
+  }
+}
+
+// .isHidden {
+//   display: none !important;
+// }
+
+// .cp-sign-up-form__input--hidden {
+//   width: 0px;
+//   height: 0px;
+//   border: none;
+//   outline: none;
+//   position: fixed;
+//   top: -100rem;
+//   left: -100rem;
+// }
+
+// .cp-scrollBar {
+//   overflow: hidden;
+//   overflow-y: auto;
+//   &::-webkit-scrollbar-track {
+//     border-radius: 0;
+//     background-color: transparent;
+//   }
+//   &::-webkit-scrollbar {
+//     width: 6rem;
+//     height: 6rem;
+//     // background-color: rgba(135, 135, 135, 0.5);
+//     opacity: 0.5;
+//   }
+//   &::-webkit-scrollbar-thumb {
+//     border-radius: 4rem;
+//     background-color: rgba(255, 255, 255, 0.75);
+//     opacity: 0.5;
+//   }
+// }
+
+@media (min-width: 414px) {
+  html {
+    font-size: 1px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: calc(1px + ((100vw - 1565px) / 1565) * 1);
+  }
+}
+
+@media (min-width: 1565px) {
+  html {
+    font-size: 1px;
+  }
+}
