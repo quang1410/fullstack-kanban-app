@@ -68,5 +68,3 @@ export const LANGUAGE_DATA = [
     name: 'app_english',
   },
 ];
-
-export const URL_SERVER_HOST = 'https://jsonplaceholder.typicode.com';

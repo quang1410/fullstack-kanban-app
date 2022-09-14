@@ -1,20 +1,50 @@
-import { Header } from 'components/Header';
-import React from 'react';
-import { useDispatch, useSelector } from 'hooks';
+import { Box } from '@mui/material';
+import { Loading } from 'components/Loading';
+import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { authService } from 'services';
+// import { useDispatch } from 'react-redux';
+// import Sidebar from '../common/Sidebar';
+// import { setUser } from '../../redux/features/userSlice';
 
 const DefaultLayout = ({ children }) => {
-  const { locale } = useSelector(({ AppStore }) => ({
-    locale: AppStore.locale,
-  }));
+  const history = useHistory();
+  // const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
-  const { setLocale } = useDispatch(({ AppStore }) => ({
-    setLocale: AppStore.setLocale,
-  }));
-  return (
-    <>
-      <Header locale={locale} setLocale={setLocale} />
-      {children}
-    </>
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await authService.isAuthenticated();
+      console.log('user', user);
+      if (!user) {
+        history.push('/login');
+      } else {
+        // save user
+        // dispatch(setUser(user));
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, [history]);
+
+  return loading ? (
+    <Loading fullHeight />
+  ) : (
+    <Box
+      sx={{
+        display: 'flex',
+      }}
+    >
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: 1,
+          width: 'max-content',
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
   );
 };
 

@@ -30,7 +30,11 @@ module.exports = {
       jsx: true,
     },
     ecmaVersion: 2018,
+    requireConfigFile: false,
     sourceType: 'module',
+    babelOptions: {
+      presets: ['@babel/preset-react'],
+    },
   },
   plugins: ['prettier', 'react', 'react-hooks'],
   rules: {

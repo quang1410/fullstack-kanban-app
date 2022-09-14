@@ -1,70 +1,71 @@
-html {
-  font-size: calc(1px + ((100vw - 414px) / 414) * 1);
-}
+// html {
+//   font-size: calc(1px + ((100vw - 414px) / 414) * 1);
+// }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI',
-    Helvetica, Arial, sans-serif;
-  font-size: 14rem;
-  font-weight: 400;
-  word-break: break-word;
-  p {
-    font-size: 12rem;
-    word-break: break-word;
-    margin-bottom: 0;
-  }
-}
+// body {
+//   font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI',
+//     Helvetica, Arial, sans-serif;
+//   font-size: 14rem;
+//   font-weight: 400;
+//   word-break: break-word;
+//   p {
+//     font-size: 12rem;
+//     word-break: break-word;
+//     margin-bottom: 0;
+//   }
+// }
 
 * {
   box-sizing: border-box;
   margin: 0;
   margin-bottom: 0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: bold;
-}
-
-ul {
   padding: 0;
-  li {
-    list-style: none;
-  }
 }
 
-button {
-  &:hover:enabled {
-    cursor: pointer;
-  }
-  &:disabled {
-    pointer-events: none;
-  }
-}
+// h1,
+// h2,
+// h3,
+// h4,
+// h5,
+// h6 {
+//   font-weight: bold;
+// }
 
-a {
-  text-decoration: none;
-}
+// ul {
+//   padding: 0;
+//   li {
+//     list-style: none;
+//   }
+// }
 
-input,
-textarea {
-  appearance: none;
-  outline: none;
-  &:-webkit-autofill,
-  &:-webkit-autofill:hover,
-  &:-webkit-autofill:focus,
-  &:-webkit-autofill:active {
-    -webkit-text-fill-color: inherit;
-    transition-property: all;
-    transition-delay: 99999s;
-    -webkit-transition-delay: 99999s;
-    font-size: inherit;
-  }
-}
+// button {
+//   &:hover:enabled {
+//     cursor: pointer;
+//   }
+//   &:disabled {
+//     pointer-events: none;
+//   }
+// }
+
+// a {
+//   text-decoration: none;
+// }
+
+// input,
+// textarea {
+//   appearance: none;
+//   outline: none;
+//   &:-webkit-autofill,
+//   &:-webkit-autofill:hover,
+//   &:-webkit-autofill:focus,
+//   &:-webkit-autofill:active {
+//     -webkit-text-fill-color: inherit;
+//     transition-property: all;
+//     transition-delay: 99999s;
+//     -webkit-transition-delay: 99999s;
+//     font-size: inherit;
+//   }
+// }
 
 // .isHidden {
 //   display: none !important;
@@ -100,20 +101,20 @@ textarea {
 //   }
 // }
 
-@media (min-width: 414px) {
-  html {
-    font-size: 1px;
-  }
-}
+// @media (min-width: 414px) {
+//   html {
+//     font-size: 1px;
+//   }
+// }
 
-@media (min-width: 1024px) {
-  html {
-    font-size: calc(1px + ((100vw - 1565px) / 1565) * 1);
-  }
-}
+// @media (min-width: 1024px) {
+//   html {
+//     font-size: calc(1px + ((100vw - 1565px) / 1565) * 1);
+//   }
+// }
 
-@media (min-width: 1565px) {
-  html {
-    font-size: 1px;
-  }
-}
+// @media (min-width: 1565px) {
+//   html {
+//     font-size: 1px;
+//   }
+// }

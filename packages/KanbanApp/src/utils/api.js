@@ -1,18 +1,19 @@
 import axios from 'axios';
-import { URL_SERVER_HOST } from 'utils/constants';
+import queryString from 'query-string';
 
 const API = axios.create({
-  baseURL: URL_SERVER_HOST,
+  baseURL: process.env.REACT_APP_URL_SERVER,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
+  paramsSerializer: (params) => queryString.stringify({ params }),
 });
 
 API.interceptors.request.use(
   (config) => {
-    const token = window.localStorage.getItem('jwt');
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${JSON.parse(token)}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -23,20 +24,20 @@ API.interceptors.request.use(
 
 API.interceptors.response.use(
   (res) => {
-    return res;
+    if (res && res.data) return res.data;
   },
-  async (err) => {
+  (err) => {
+    console.log('err', err);
     // TODO: Handle global error, 401, 403....
-    const errorResponse = err.response.data;
-
-    switch (errorResponse.statusCode) {
+    const errorResponse = err.response;
+    switch (errorResponse.status) {
       // case 401:
       // case 403:
       //   store.dispatch.authentication.logout();
       //   return;
 
-      // case 400:
-      //   return Promise.reject(err.response);
+      case 400:
+        return Promise.reject(err.response);
 
       default: {
         const errors = errorResponse?.data?.errors;
