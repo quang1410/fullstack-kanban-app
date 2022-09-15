@@ -1,12 +1,11 @@
 import Loadable from 'components/Loadable';
-import { ThreeDotsLoader } from 'components/ThreeDotsLoader';
+import { Loading } from 'components/Loading';
 import { lazy } from 'react';
-import { colors } from 'styles/theme';
 
 const LazyHome = lazy(() => import('./HomePage'));
 
 const HomePage = (props) => (
-  <Loadable fallback={<ThreeDotsLoader color={colors.electricViolet} />}>
+  <Loadable fallback={<Loading fullHeight />}>
     <LazyHome {...props} />
   </Loadable>
 );

@@ -27,7 +27,6 @@ API.interceptors.response.use(
     if (res && res.data) return res.data;
   },
   (err) => {
-    console.log('err', err);
     // TODO: Handle global error, 401, 403....
     const errorResponse = err.response;
     switch (errorResponse.status) {

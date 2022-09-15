@@ -4,12 +4,17 @@ import { Link, useHistory } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { authService } from 'services';
 import { AuthLayout } from 'layouts';
+import { useDispatch } from 'hooks';
 
 const Login = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [usernameErrText, setUsernameErrText] = useState('');
   const [passwordErrText, setPasswordErrText] = useState('');
+
+  const { setInfomationUser } = useDispatch(({ UserStore }) => ({
+    setInfomationUser: UserStore.setInfomation,
+  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,6 +44,7 @@ const Login = () => {
       const res = await authService.login({ username, password });
       setLoading(false);
       localStorage.setItem('token', res.token);
+      setInfomationUser(res.user);
       history.push('/');
     } catch (err) {
       const errors = err.data.errors;
