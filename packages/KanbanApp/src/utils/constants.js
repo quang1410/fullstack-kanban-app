@@ -1,5 +1,6 @@
 export const APP_ROUTES = {
-  ABOUT: '/about',
+  BOARDS: '/boards',
+  BOARDS_DETAIL: '/boards/:boardId',
   LOGIN: '/login',
   SINGUP: '/signup',
   NOT_FOUND_PAGE: '/not-found-page',

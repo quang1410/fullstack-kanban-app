@@ -1,12 +1,12 @@
 import Loadable from 'components/Loadable';
 import { lazy } from 'react';
 
-const LazyAbout = lazy(() => import('./AboutPage'));
+const LazyAbout = lazy(() => import('./BoardPage'));
 
-const AboutPage = (props) => (
+const BoardPage = (props) => (
   <Loadable>
     <LazyAbout {...props} />
   </Loadable>
 );
 
-export { AboutPage };
+export { BoardPage };
