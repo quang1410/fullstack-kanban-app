@@ -2,31 +2,39 @@ import { Box, IconButton, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'hooks';
 import { DefaultLayout } from 'layouts';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 import { boardService } from 'services';
 import { EmojiPicker } from 'components/EmojiPicker';
+import { Kanban } from 'components/Kanban';
 
 const timeout = 500;
 let timer;
 
 const BoardPage = () => {
   const { boardId } = useParams();
+  const history = useHistory();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [sections, setSections] = useState([]);
   const [isFavourite, setIsFavourite] = useState(false);
   const [icon, setIcon] = useState('');
 
-  const { boards } = useSelector(({ BoardStore }) => ({
-    boards: BoardStore.value,
-  }));
+  const { boards, favoriteList } = useSelector(
+    ({ BoardStore, FavoriteStore }) => ({
+      boards: BoardStore.value,
+      favoriteList: FavoriteStore.value,
+    }),
+  );
 
-  const { setBoards } = useDispatch(({ BoardStore }) => ({
-    setBoards: BoardStore.setBoards,
-  }));
+  const { setBoards, setFavorites } = useDispatch(
+    ({ BoardStore, FavoriteStore }) => ({
+      setBoards: BoardStore.setBoards,
+      setFavorites: FavoriteStore.setFavorite,
+    }),
+  );
 
   useEffect(() => {
     const getBoard = async () => {
@@ -38,37 +46,35 @@ const BoardPage = () => {
         setIsFavourite(res.favourite);
         setIcon(res.icon);
       } catch (err) {
-        alert(err);
+        console.log(err);
       }
     };
     getBoard();
-    console.log('boards', boards);
-    console.log('icon', icon);
-    console.log('sections', sections);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardId]);
+
+  console.log('sections', sections);
 
   const onIconChange = async (newIcon) => {
     let temp = [...boards];
     const index = temp.findIndex((e) => e.id === boardId);
     temp[index] = { ...temp[index], icon: newIcon };
 
-    // if (isFavourite) {
-    //   let tempFavourite = [...favouriteList];
-    //   const favouriteIndex = tempFavourite.findIndex((e) => e.id === boardId);
-    //   tempFavourite[favouriteIndex] = {
-    //     ...tempFavourite[favouriteIndex],
-    //     icon: newIcon,
-    //   };
-    //   dispatch(setFavouriteList(tempFavourite));
-    // }
+    if (isFavourite) {
+      let tempFavourite = [...favoriteList];
+      const favouriteIndex = tempFavourite.findIndex((e) => e.id === boardId);
+      tempFavourite[favouriteIndex] = {
+        ...tempFavourite[favouriteIndex],
+        icon: newIcon,
+      };
+      setFavorites(tempFavourite);
+    }
 
     setIcon(newIcon);
     setBoards(temp);
     try {
       await boardService.update(boardId, { icon: newIcon });
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 
@@ -81,12 +87,15 @@ const BoardPage = () => {
     const index = temp.findIndex((e) => e.id === boardId);
     temp[index] = { ...temp[index], title: newTitle };
 
-    // if (isFavourite) {
-    //   let tempFavourite = [...favouriteList]
-    //   const favouriteIndex = tempFavourite.findIndex(e => e.id === boardId)
-    //   tempFavourite[favouriteIndex] = { ...tempFavourite[favouriteIndex], title: newTitle }
-    //   dispatch(setFavouriteList(tempFavourite))
-    // }
+    if (isFavourite) {
+      let tempFavourite = [...favoriteList];
+      const favouriteIndex = tempFavourite.findIndex((e) => e.id === boardId);
+      tempFavourite[favouriteIndex] = {
+        ...tempFavourite[favouriteIndex],
+        title: newTitle,
+      };
+      setFavorites(tempFavourite);
+    }
 
     setBoards(temp);
 
@@ -94,7 +103,7 @@ const BoardPage = () => {
       try {
         await boardService.update(boardId, { title: newTitle });
       } catch (err) {
-        alert(err);
+        console.log(err);
       }
     }, timeout);
   };
@@ -107,24 +116,46 @@ const BoardPage = () => {
       try {
         await boardService.update(boardId, { description: newDescription });
       } catch (err) {
-        alert(err);
+        console.log(err);
       }
     }, timeout);
   };
 
   const addFavourite = async () => {
     try {
-      await boardService.update(boardId, { favourite: !isFavourite });
-      // let newFavouriteList = [...favouriteList]
-      // if (isFavourite) {
-      //   newFavouriteList = newFavouriteList.filter(e => e.id !== boardId)
-      // } else {
-      //   newFavouriteList.unshift(board)
-      // }
-      // dispatch(setFavouriteList(newFavouriteList))
+      const board = await boardService.update(boardId, {
+        favourite: !isFavourite,
+      });
+      let newFavouriteList = [...favoriteList];
+      if (isFavourite) {
+        newFavouriteList = newFavouriteList.filter((e) => e.id !== boardId);
+      } else {
+        newFavouriteList.unshift(board);
+      }
+      setFavorites(newFavouriteList);
       setIsFavourite(!isFavourite);
     } catch (err) {
-      alert(err);
+      console.log(err);
+    }
+  };
+
+  const deleteBoard = async () => {
+    try {
+      await boardService.delete(boardId);
+      if (isFavourite) {
+        const newFavouriteList = favoriteList.filter((e) => e.id !== boardId);
+        setFavorites(newFavouriteList);
+      }
+
+      const newList = boards.filter((e) => e.id !== boardId);
+      if (newList.length === 0) {
+        history.push('/boards');
+      } else {
+        history.push(`/boards/${newList[0].id}`);
+      }
+      setBoards(newList);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -145,7 +176,7 @@ const BoardPage = () => {
             <StarBorderOutlinedIcon />
           )}
         </IconButton>
-        <IconButton variant="outlined" color="error" onClick={() => {}}>
+        <IconButton variant="outlined" color="error" onClick={deleteBoard}>
           <DeleteOutlinedIcon />
         </IconButton>
       </Box>
@@ -182,9 +213,9 @@ const BoardPage = () => {
             }}
           />
         </Box>
-        {/* <Box>
+        <Box>
           <Kanban data={sections} boardId={boardId} />
-        </Box> */}
+        </Box>
       </Box>
     </DefaultLayout>
   );

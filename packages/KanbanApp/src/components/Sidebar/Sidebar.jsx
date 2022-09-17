@@ -15,6 +15,7 @@ import { boardService } from 'services';
 import { useDispatch, useSelector } from 'hooks';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { Favorite } from 'components/Favorite';
 
 const Sidebar = ({ username, onLogout }) => {
   const { boardId } = useParams();
@@ -128,6 +129,8 @@ const Sidebar = ({ username, onLogout }) => {
             </Typography>
           </Box>
         </ListItem>
+        <Box sx={{ paddingTop: '10px' }} />
+        <Favorite />
         <Box sx={{ paddingTop: '10px' }} />
         <ListItem>
           <Box
