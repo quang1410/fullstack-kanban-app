@@ -1,6 +1,6 @@
 import API from 'utils/api';
 
-class sectionServive {
+class sectionService {
   create = (boardId) => API.post(`boards/${boardId}/sections`);
 
   update = (boardId, sectionId, params) =>
@@ -10,4 +10,4 @@ class sectionServive {
     API.delete(`boards/${boardId}/sections/${sectionId}`);
 }
 
-export default new sectionServive();
+export default new sectionService();
