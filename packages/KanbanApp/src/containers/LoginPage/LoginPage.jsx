@@ -1,7 +1,8 @@
-import { Box, Button, TextField } from '@mui/material';
 import { useState } from 'react';
+import { Box, Button, TextField } from '@mui/material';
 import { Link, useHistory } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
+
 import { authService } from 'services';
 import { AuthLayout } from 'layouts';
 import { useDispatch } from 'hooks';
@@ -47,7 +48,9 @@ const Login = () => {
       setInfomationUser(res.user);
       history.push('/');
     } catch (err) {
+      console.log('err', err);
       const errors = err.data.errors;
+      console.log('errors', errors);
       errors.forEach((e) => {
         if (e.param === 'username') {
           setUsernameErrText(e.msg);

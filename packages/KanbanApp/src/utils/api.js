@@ -27,10 +27,12 @@ API.interceptors.response.use(
     if (res && res.data) return res.data;
   },
   (err) => {
+    console.log(err);
     // TODO: Handle global error, 401, 403....
     const errorResponse = err.response;
     switch (errorResponse.status) {
-      // case 401:
+      case 401:
+        return Promise.reject(err.response);
       // case 403:
       //   store.dispatch.authentication.logout();
       //   return;
