@@ -6,7 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
-import { boardService } from 'services';
+import { boardService, sectionService, taskService } from 'services';
 import { EmojiPicker } from 'components/EmojiPicker';
 import { Kanban } from 'components/Kanban';
 
@@ -212,7 +212,17 @@ const BoardPage = () => {
           />
         </Box>
         <Box>
-          <Kanban data={sections} boardId={boardId} />
+          <Kanban
+            dataSections={sections}
+            boardId={boardId}
+            updatePositionTask={taskService.updatePosition}
+            createNewSection={sectionService.create}
+            deleteSectionService={sectionService.delete}
+            updateSection={sectionService.update}
+            createTaskService={taskService.create}
+            deleteTaskService={taskService.delete}
+            updateTaskService={taskService.update}
+          />
         </Box>
       </Box>
     </DefaultLayout>

@@ -13,7 +13,6 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Moment from 'moment';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { taskService } from 'services';
 import styled from 'styled-components/macro';
 
 const modalStyle = {
@@ -87,23 +86,30 @@ let timer;
 const timeout = 500;
 let isModalClosed = false;
 
-const TaskModal = (props) => {
-  const boardId = props.boardId;
-  const [task, setTask] = useState(props.task);
+const TaskModal = ({
+  boardId,
+  selectedTask,
+  onUpdate,
+  onCloseTask,
+  onDelete,
+  deleteTaskService,
+  updateTaskService,
+}) => {
+  const [task, setTask] = useState(selectedTask);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const editorWrapperRef = useRef();
 
   useEffect(() => {
-    setTask(props.task);
-    setTitle(props.task !== undefined ? props.task.title : '');
-    setContent(props.task !== undefined ? props.task.content : '');
-    if (props.task !== undefined) {
+    setTask(selectedTask);
+    setTitle(selectedTask !== undefined ? selectedTask.title : '');
+    setContent(selectedTask !== undefined ? selectedTask.content : '');
+    if (selectedTask !== undefined) {
       isModalClosed = false;
 
       updateEditorHeight();
     }
-  }, [props.task]);
+  }, [selectedTask]);
 
   const updateEditorHeight = () => {
     setTimeout(() => {
@@ -117,17 +123,17 @@ const TaskModal = (props) => {
 
   const onClose = () => {
     isModalClosed = true;
-    props.onUpdate(task);
-    props.onClose();
+    onUpdate(task);
+    onCloseTask();
   };
 
   const deleteTask = async () => {
     try {
-      await taskService.delete(boardId, task.id);
-      props.onDelete(task);
+      await deleteTaskService(boardId, task.id);
+      onDelete(task);
       setTask(undefined);
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 
@@ -136,35 +142,33 @@ const TaskModal = (props) => {
     const newTitle = e.target.value;
     timer = setTimeout(async () => {
       try {
-        await taskService.update(boardId, task.id, { title: newTitle });
+        await updateTaskService(boardId, task.id, { title: newTitle });
       } catch (err) {
-        alert(err);
+        console.log(err);
       }
     }, timeout);
 
     task.title = newTitle;
     setTitle(newTitle);
-    props.onUpdate(task);
+    onUpdate(task);
   };
 
   const updateContent = async (event, editor) => {
     clearTimeout(timer);
     const data = editor.getData();
 
-    console.log({ isModalClosed });
-
     if (!isModalClosed) {
       timer = setTimeout(async () => {
         try {
-          await taskService.update(boardId, task.id, { content: data });
+          await updateTaskService(boardId, task.id, { content: data });
         } catch (err) {
-          alert(err);
+          console.log(err);
         }
       }, timeout);
 
       task.content = data;
       setContent(data);
-      props.onUpdate(task);
+      onUpdate(task);
     }
   };
 

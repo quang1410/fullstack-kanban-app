@@ -11,20 +11,28 @@ import { useEffect, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { sectionService, taskService } from 'services';
 import { TaskModal } from 'components/TaskModal';
 
 let timer;
 const timeout = 500;
 
-const Kanban = (props) => {
-  const boardId = props.boardId;
+const Kanban = ({
+  dataSections,
+  boardId,
+  updatePositionTask,
+  createNewSection,
+  deleteSectionService,
+  updateSection,
+  createTaskService,
+  deleteTaskService,
+  updateTaskService,
+}) => {
   const [data, setData] = useState([]);
   const [selectedTask, setSelectedTask] = useState(undefined);
 
   useEffect(() => {
-    setData(props.data);
-  }, [props.data]);
+    setData(dataSections);
+  }, [dataSections]);
 
   const onDragEnd = async ({ source, destination }) => {
     if (!destination) return;
@@ -53,7 +61,7 @@ const Kanban = (props) => {
     }
 
     try {
-      await taskService.updatePosition(boardId, {
+      await updatePositionTask(boardId, {
         resourceList: sourceTasks,
         destinationList: destinationTasks,
         resourceSectionId: sourceSectionId,
@@ -67,7 +75,7 @@ const Kanban = (props) => {
 
   const createSection = async () => {
     try {
-      const section = await sectionService.create(boardId);
+      const section = await createNewSection(boardId);
       setData([...data, section]);
     } catch (err) {
       alert(err);
@@ -76,7 +84,7 @@ const Kanban = (props) => {
 
   const deleteSection = async (sectionId) => {
     try {
-      await sectionService.delete(boardId, sectionId);
+      await deleteSectionService(boardId, sectionId);
       const newData = [...data].filter((e) => e.id !== sectionId);
       setData(newData);
     } catch (err) {
@@ -93,7 +101,7 @@ const Kanban = (props) => {
     setData(newData);
     timer = setTimeout(async () => {
       try {
-        await sectionService.update(boardId, sectionId, { title: newTitle });
+        await updateSection(boardId, sectionId, { title: newTitle });
       } catch (err) {
         alert(err);
       }
@@ -102,7 +110,7 @@ const Kanban = (props) => {
 
   const createTask = async (sectionId) => {
     try {
-      const task = await taskService.create(boardId, { sectionId });
+      const task = await createTaskService(boardId, { sectionId });
       const newData = [...data];
       const index = newData.findIndex((e) => e.id === sectionId);
       newData[index].tasks.unshift(task);
@@ -263,11 +271,13 @@ const Kanban = (props) => {
         </Box>
       </DragDropContext>
       <TaskModal
-        task={selectedTask}
+        selectedTask={selectedTask}
         boardId={boardId}
-        onClose={() => setSelectedTask(undefined)}
+        onCloseTask={() => setSelectedTask(undefined)}
         onUpdate={onUpdateTask}
         onDelete={onDeleteTask}
+        deleteTaskService={deleteTaskService}
+        updateTaskService={updateTaskService}
       />
     </>
   );
