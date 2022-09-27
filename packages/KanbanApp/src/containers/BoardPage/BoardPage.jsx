@@ -52,8 +52,6 @@ const BoardPage = () => {
     getBoard();
   }, [boardId]);
 
-  console.log('sections', sections);
-
   const onIconChange = async (newIcon) => {
     let temp = [...boards];
     const index = temp.findIndex((e) => e.id === boardId);

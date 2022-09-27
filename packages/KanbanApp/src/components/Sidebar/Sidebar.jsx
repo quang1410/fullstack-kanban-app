@@ -43,7 +43,6 @@ const Sidebar = ({ username, onLogout }) => {
   }, [setBoards]);
 
   useEffect(() => {
-    console.log('boards', boards);
     const activeItem = boards.findIndex((e) => e.id === boardId);
     if (boards.length > 0 && boardId === undefined) {
       history.push(`/boards/${boards[0].id}`);
@@ -112,21 +111,6 @@ const Sidebar = ({ username, onLogout }) => {
             <IconButton onClick={onLogout}>
               <LogoutOutlinedIcon fontSize="small" />
             </IconButton>
-          </Box>
-        </ListItem>
-        <Box sx={{ paddingTop: '10px' }} />
-        <ListItem>
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography variant="body2" fontWeight={'700'}>
-              Favorite
-            </Typography>
           </Box>
         </ListItem>
         <Box sx={{ paddingTop: '10px' }} />

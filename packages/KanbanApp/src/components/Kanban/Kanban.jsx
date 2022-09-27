@@ -157,7 +157,16 @@ const Kanban = (props) => {
           }}
         >
           {data.map((section) => (
-            <div key={section.id} style={{ width: '300px' }}>
+            <div
+              key={section.id}
+              style={{
+                width: '300px',
+                borderRadius: '3px',
+                backgroundColor: 'rgba(233, 237, 240, 0.2)',
+                marginRight: '8px',
+                marginBottom: '8px',
+              }}
+            >
               <Droppable key={section.id} droppableId={section.id}>
                 {(provided) => (
                   <Box

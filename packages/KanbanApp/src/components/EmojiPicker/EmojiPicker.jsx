@@ -1,13 +1,15 @@
 import { Box, Typography } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-
-// import 'emoji-mart/css/emoji-mart.css';
+import { useOnClickOutside } from 'hooks';
 
 const EmojiPicker = ({ icon, onChange }) => {
+  const ref = useRef();
   const [selectedEmoji, setSelectedEmoji] = useState();
   const [isShowPicker, setIsShowPicker] = useState(false);
+
+  useOnClickOutside(ref, () => setIsShowPicker(false));
 
   useEffect(() => {
     setSelectedEmoji(icon);
@@ -41,6 +43,7 @@ const EmojiPicker = ({ icon, onChange }) => {
           top: '100%',
           zIndex: '9999',
         }}
+        ref={ref}
       >
         <Picker
           data={data}

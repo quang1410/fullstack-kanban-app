@@ -21,7 +21,6 @@ const DefaultLayout = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const user = await authService.isAuthenticated();
-      console.log('user', user);
       if (!user) {
         history.push('/login');
       } else {
