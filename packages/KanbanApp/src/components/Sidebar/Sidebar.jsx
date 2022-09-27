@@ -11,36 +11,24 @@ import React, { useEffect, useState } from 'react';
 import { colors } from 'styles/theme';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import { boardService } from 'services';
-import { useDispatch, useSelector } from 'hooks';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { Favorite } from 'components/Favorite';
 
-const Sidebar = ({ username, onLogout }) => {
+const Sidebar = ({
+  username,
+  onLogout,
+  setFavorite,
+  favoriteList,
+  updateFavouritePosition,
+  setBoards,
+  boards,
+  updatePositionBoard,
+  createBoard,
+}) => {
   const { boardId } = useParams();
   const history = useHistory();
   const [activeIndex, setActiveIndex] = useState(0);
-
-  const { setBoards } = useDispatch(({ BoardStore }) => ({
-    setBoards: BoardStore.setBoards,
-  }));
-
-  const { boards } = useSelector(({ BoardStore }) => ({
-    boards: BoardStore.value,
-  }));
-
-  useEffect(() => {
-    const getBoards = async () => {
-      try {
-        const res = await boardService.getAll();
-        setBoards(res);
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
-    getBoards();
-  }, [setBoards]);
 
   useEffect(() => {
     const activeItem = boards.findIndex((e) => e.id === boardId);
@@ -60,20 +48,20 @@ const Sidebar = ({ username, onLogout }) => {
     setBoards(newList);
 
     try {
-      await boardService.updatePositoin({ boards: newList });
+      await updatePositionBoard({ boards: newList });
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 
   const handleAddBoard = async () => {
     try {
-      const res = await boardService.create();
+      const res = await createBoard();
       const newList = [res, ...boards];
       setBoards(newList);
       history.push(`/boards/${res.id}`);
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 
@@ -114,7 +102,11 @@ const Sidebar = ({ username, onLogout }) => {
           </Box>
         </ListItem>
         <Box sx={{ paddingTop: '10px' }} />
-        <Favorite />
+        <Favorite
+          setFavorite={setFavorite}
+          favoriteList={favoriteList}
+          updateFavouritePosition={updateFavouritePosition}
+        />
         <Box sx={{ paddingTop: '10px' }} />
         <ListItem>
           <Box

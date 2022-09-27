@@ -4,19 +4,27 @@ import { Sidebar } from 'components/Sidebar';
 import { useDispatch, useSelector } from 'hooks';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { authService } from 'services';
+import { authService, boardService } from 'services';
 
 const DefaultLayout = ({ children }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(true);
 
-  const { setInfomationUser } = useDispatch(({ UserStore }) => ({
-    setInfomationUser: UserStore.setInfomation,
-  }));
+  const { setInfomationUser, setFavorite, setBoards } = useDispatch(
+    ({ UserStore, FavoriteStore, BoardStore }) => ({
+      setInfomationUser: UserStore.setInfomation,
+      setFavorite: FavoriteStore.setFavorite,
+      setBoards: BoardStore.setBoards,
+    }),
+  );
 
-  const { userInfomation } = useSelector(({ UserStore }) => ({
-    userInfomation: UserStore.username,
-  }));
+  const { userInfomation, favoriteList, boards } = useSelector(
+    ({ UserStore, FavoriteStore, BoardStore }) => ({
+      userInfomation: UserStore.username,
+      favoriteList: FavoriteStore.value,
+      boards: BoardStore.value,
+    }),
+  );
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,6 +39,30 @@ const DefaultLayout = ({ children }) => {
     checkAuth();
   }, [history, setInfomationUser]);
 
+  useEffect(() => {
+    const getBoards = async () => {
+      try {
+        const res = await boardService.getFavourites();
+        setFavorite(res);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getBoards();
+  }, [setFavorite]);
+
+  useEffect(() => {
+    const getBoards = async () => {
+      try {
+        const res = await boardService.getAll();
+        setBoards(res);
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+    getBoards();
+  }, [setBoards]);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     history.push('/login');
@@ -44,7 +76,16 @@ const DefaultLayout = ({ children }) => {
         display: 'flex',
       }}
     >
-      <Sidebar username={userInfomation} onLogout={handleLogout} />
+      <Sidebar
+        username={userInfomation}
+        onLogout={handleLogout}
+        setFavorite={setFavorite}
+        favoriteList={favoriteList}
+        updateFavouritePosition={boardService.updateFavouritePosition}
+        setBoards={setBoards}
+        boards={boards}
+        updatePositionBoard={boardService.updatePositoin}
+      />
       <Box
         sx={{
           flexGrow: 1,

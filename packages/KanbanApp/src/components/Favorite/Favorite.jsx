@@ -1,33 +1,15 @@
 import { Box, ListItem, ListItemButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'hooks';
 import { useParams, Link } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { boardService } from 'services';
 
-const FavoriteList = () => {
+const FavoriteList = ({
+  setFavorite,
+  favoriteList,
+  updateFavouritePosition,
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const { boardId } = useParams();
-
-  const { setFavorite } = useDispatch(({ FavoriteStore }) => ({
-    setFavorite: FavoriteStore.setFavorite,
-  }));
-
-  const { favoriteList } = useSelector(({ FavoriteStore }) => ({
-    favoriteList: FavoriteStore.value,
-  }));
-
-  useEffect(() => {
-    const getBoards = async () => {
-      try {
-        const res = await boardService.getFavourites();
-        setFavorite(res);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getBoards();
-  }, [setFavorite]);
 
   useEffect(() => {
     const index = favoriteList.findIndex((e) => e.id === boardId);
@@ -45,7 +27,7 @@ const FavoriteList = () => {
     setFavorite(newFavoriteListList);
 
     try {
-      await boardService.updateFavouritePosition({
+      await updateFavouritePosition({
         boards: newFavoriteListList,
       });
     } catch (err) {
