@@ -1,0 +1,9 @@
+[build]
+  command = "yarn run build"
+  publish = "/build"
+  base ="/packages/KanbanApp"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
