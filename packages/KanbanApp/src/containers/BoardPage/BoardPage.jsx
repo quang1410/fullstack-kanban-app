@@ -9,9 +9,13 @@ import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 import { boardService, sectionService, taskService } from 'services';
 import { EmojiPicker } from 'components/EmojiPicker';
 import { Kanban } from 'components/Kanban';
+import { UploadImage } from 'components/UploadImage';
+import userProfileImg from 'assets/images/ic-18-18-userprofile.svg';
+import axios from 'axios';
 
 const timeout = 500;
 let timer;
+const maxSizeFile = 10 * 1024 * 1024; // 10mb
 
 const BoardPage = () => {
   const { boardId } = useParams();
@@ -21,6 +25,7 @@ const BoardPage = () => {
   const [sections, setSections] = useState([]);
   const [isFavourite, setIsFavourite] = useState(false);
   const [icon, setIcon] = useState('');
+  const [urlImg, setUrlImg] = useState(() => userProfileImg);
 
   const { boards, favoriteList } = useSelector(
     ({ BoardStore, FavoriteStore }) => ({
@@ -157,6 +162,42 @@ const BoardPage = () => {
     }
   };
 
+  const onChangePicture = (e) => {
+    const { value, files = {} } = (e && e.target) || {}; //return e.target
+    const file = files[0];
+    const reader = new FileReader();
+    const formData = new FormData();
+    if (value && file) {
+      if (file.size > maxSizeFile) {
+        console.log('error', file.size, maxSizeFile);
+      } else {
+        // const fileName = file.name;
+        reader.onloadend = async function () {
+          // const fileData = {
+          //   file,
+          //   fileUrl: e.target.result,
+          //   fileName,
+          // };
+          axios
+            .post('https://jella.xyz/upload', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+              },
+            })
+            .then((response) => {
+              setUrlImg(response.data[0]?.url);
+              console.log(response);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        };
+        reader.readAsText(file);
+      }
+    }
+  };
+
   return (
     <DefaultLayout>
       <Box
@@ -197,6 +238,7 @@ const BoardPage = () => {
               },
             }}
           />
+          <UploadImage src={urlImg} onChange={onChangePicture} />
           <TextField
             value={description}
             onChange={updateDescription}
